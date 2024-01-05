@@ -1,14 +1,25 @@
-use reqwest::header::HeaderName;
+use reqwest::header::{HeaderName, HeaderValue};
 use std::error::Error;
 
-pub fn header<KEY>(reqwest_builder: reqwest::RequestBuilder)
+pub fn broken<KEY>()
 where
     HeaderName: TryFrom<KEY>,
     <HeaderName as TryFrom<KEY>>::Error: Into<Box<dyn Error>>,
 {
-    let _ = reqwest_builder.header(reqwest::header::CONTENT_LENGTH, 1234);
+    header(reqwest::header::CONTENT_LENGTH, 1234);
 }
 
-fn test(reqwest_builder: reqwest::RequestBuilder) {
-    reqwest_builder.header(reqwest::header::CONTENT_LENGTH, 1234);
+fn works() {
+    header(reqwest::header::CONTENT_LENGTH, 1234);
+}
+
+pub fn header<K, V>(key: K, value: V)
+where
+    HeaderName: TryFrom<K>,
+    <HeaderName as TryFrom<K>>::Error: Into<Box<dyn Error>>,
+    HeaderValue: TryFrom<V>,
+    <HeaderValue as TryFrom<V>>::Error: Into<Box<dyn Error>>,
+{
+    drop(key);
+    drop(value);
 }
