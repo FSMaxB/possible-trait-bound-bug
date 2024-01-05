@@ -1,29 +1,27 @@
 use http::{HeaderName, HeaderValue};
+use std::error::Error;
 
 pub struct RequestBuilder {
     reqwest_builder: reqwest::RequestBuilder,
-    error: Option<anyhow::Error>,
 }
 
 impl RequestBuilder {
     pub fn header<KEY, VALUE>(mut self, key: KEY, value: VALUE) -> Self
     where
         HeaderName: TryFrom<KEY>,
-        <HeaderName as TryFrom<KEY>>::Error: Into<anyhow::Error>,
+        <HeaderName as TryFrom<KEY>>::Error: Into<Box<dyn Error>>,
         HeaderValue: TryFrom<VALUE>,
-        <HeaderValue as TryFrom<VALUE>>::Error: Into<anyhow::Error>,
+        <HeaderValue as TryFrom<VALUE>>::Error: Into<Box<dyn Error>>,
     {
         let key = match HeaderName::try_from(key) {
             Ok(key) => key,
-            Err(error) => {
-                self.error = Some(error.into());
+            Err(_) => {
                 return self;
             }
         };
         let value = match HeaderValue::try_from(value) {
             Ok(value) => value,
-            Err(error) => {
-                self.error = Some(error.into());
+            Err(_) => {
                 return self;
             }
         };
@@ -35,15 +33,13 @@ impl RequestBuilder {
     fn test(mut self) -> Self {
         let key = match HeaderName::try_from(http::header::CONTENT_LENGTH) {
             Ok(key) => key,
-            Err(error) => {
-                self.error = Some(error.into());
+            Err(_) => {
                 return self;
             }
         };
         let value = match HeaderValue::try_from(1234) {
             Ok(value) => value,
-            Err(error) => {
-                self.error = Some(error.into());
+            Err(_) => {
                 return self;
             }
         };
