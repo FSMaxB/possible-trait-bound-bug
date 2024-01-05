@@ -1,24 +1,14 @@
 use http::HeaderName;
 use std::error::Error;
 
-pub struct RequestBuilder {
-    reqwest_builder: reqwest::RequestBuilder,
+pub fn header<KEY>(reqwest_builder: reqwest::RequestBuilder)
+where
+    HeaderName: TryFrom<KEY>,
+    <HeaderName as TryFrom<KEY>>::Error: Into<Box<dyn Error>>,
+{
+    let _ = reqwest_builder.header(http::header::CONTENT_LENGTH, 1234);
 }
 
-impl RequestBuilder {
-    pub fn header<KEY>(mut self)
-    where
-        HeaderName: TryFrom<KEY>,
-        <HeaderName as TryFrom<KEY>>::Error: Into<Box<dyn Error>>,
-    {
-        let _ = self
-            .reqwest_builder
-            .header(http::header::CONTENT_LENGTH, 1234);
-    }
-
-    fn test(mut self) {
-        let _ = self
-            .reqwest_builder
-            .header(http::header::CONTENT_LENGTH, 1234);
-    }
+fn test(reqwest_builder: reqwest::RequestBuilder) {
+    reqwest_builder.header(http::header::CONTENT_LENGTH, 1234);
 }
