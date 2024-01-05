@@ -1,18 +1,16 @@
-use reqwest::header::HeaderName;
-
 pub fn broken<T>()
 where
-    HeaderName: From<T>,
+    (): From<T>,
 {
-    call(reqwest::header::CONTENT_LENGTH);
+    call(());
 }
 
 fn works() {
-    call(reqwest::header::CONTENT_LENGTH);
+    call(());
 }
 
 pub fn call<T>(_: T)
 where
-    HeaderName: From<T>,
+    (): From<T>,
 {
 }
