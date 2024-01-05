@@ -1,4 +1,4 @@
-use http::{HeaderName, HeaderValue};
+use http::HeaderName;
 use std::error::Error;
 
 pub struct RequestBuilder {
@@ -6,21 +6,19 @@ pub struct RequestBuilder {
 }
 
 impl RequestBuilder {
-    pub fn header<KEY>(mut self) -> Self
+    pub fn header<KEY>(mut self)
     where
         HeaderName: TryFrom<KEY>,
         <HeaderName as TryFrom<KEY>>::Error: Into<Box<dyn Error>>,
     {
-        self.reqwest_builder = self
+        let _ = self
             .reqwest_builder
             .header(http::header::CONTENT_LENGTH, 1234);
-        self
     }
 
-    fn test(mut self) -> Self {
-        self.reqwest_builder = self
+    fn test(mut self) {
+        let _ = self
             .reqwest_builder
             .header(http::header::CONTENT_LENGTH, 1234);
-        self
     }
 }
