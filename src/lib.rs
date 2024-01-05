@@ -1,19 +1,18 @@
 use reqwest::header::HeaderName;
 
-pub fn broken<KEY>()
+pub fn broken<T>()
 where
-    HeaderName: From<KEY>,
+    HeaderName: From<T>,
 {
-    header(reqwest::header::CONTENT_LENGTH);
+    call(reqwest::header::CONTENT_LENGTH);
 }
 
 fn works() {
-    header(reqwest::header::CONTENT_LENGTH);
+    call(reqwest::header::CONTENT_LENGTH);
 }
 
-pub fn header<K>(key: K)
+pub fn call<T>(_: T)
 where
-    HeaderName: From<K>,
+    HeaderName: From<T>,
 {
-    drop(key);
 }
